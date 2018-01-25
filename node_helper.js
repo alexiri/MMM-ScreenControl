@@ -1,6 +1,7 @@
 var NodeHelper = require("node_helper");
 var Gpio = require('onoff').Gpio;
 var CronJob = require("cron").CronJob;
+var exec = require("child_process").exec;
 
 
 module.exports = NodeHelper.create({
@@ -36,6 +37,14 @@ module.exports = NodeHelper.create({
       // Watch toggle button for changes
       this.toggleButton.watch(function(value) {
         console.log(self.name + ' detected toggle button');
+
+        // Make some noise!
+        exec('sudo ' + __dirname + '/pulse', function(error, stdout, stderr) {
+          if (error != null) {
+            console.log(self.name + ' failed to make a sound');
+            console.log(error);
+          }
+        });
 
         // When the screen is on, emit button press events
         if (self.screenState == true) {
