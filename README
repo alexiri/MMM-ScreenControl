@@ -1,0 +1,8 @@
+If you get the error:
+
+Error: Module version mismatch. Expected 50, got 48.
+
+
+Try this:
+
+npm rebuild --runtime=electron --target=1.4.3 --disturl=https://atom.io/download/atom-shell --abi=50
