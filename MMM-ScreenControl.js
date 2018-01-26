@@ -10,6 +10,7 @@ Module.register('MMM-ScreenControl', {
     defaultState: true,
     schedules: [],
     toggleButtonWakeTime: 5*60*1000, // 5 minutes
+    buzz: true, // Make some noise when the toggle button is pressed
 
     animationSpeed: 1000,
   },

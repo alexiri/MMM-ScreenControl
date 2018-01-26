@@ -38,13 +38,15 @@ module.exports = NodeHelper.create({
       this.toggleButton.watch(function(value) {
         console.log(self.name + ' detected toggle button');
 
-        // Make some noise!
-        exec('sudo ' + __dirname + '/pulse', function(error, stdout, stderr) {
-          if (error != null) {
-            console.log(self.name + ' failed to make a sound');
-            console.log(error);
-          }
-        });
+        if (self.config.buzz == true) {
+          // Make some noise!
+          exec('sudo ' + __dirname + '/pulse', function(error, stdout, stderr) {
+            if (error != null) {
+              console.log(self.name + ' failed to make a sound');
+              console.log(error);
+            }
+          });
+        }
 
         // When the screen is on, emit button press events
         if (self.screenState == true) {
