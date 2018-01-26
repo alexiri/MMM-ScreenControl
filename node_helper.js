@@ -16,7 +16,6 @@ module.exports = NodeHelper.create({
   },
 
   socketNotificationReceived: function(notification, payload) {
-    console.log(this.name + ' socketNotificationReceived: ' + notification + ' payload: ' + JSON.stringify(payload));
     if (notification === 'CONFIG' && this.started == false) {
       const self = this;
       this.config = payload;

@@ -17,7 +17,6 @@ Module.register('MMM-ScreenControl', {
 
 
   socketNotificationReceived: function(notification, payload) {
-    this.sendSocketNotification('ACK-socketNotificationReceived', 'got ' + notification + ': ' + payload);
     if (notification === 'SCREEN_STATE') {
       this.state = payload;
       Log.info('Screen is ' + (this.state? 'on':'off'));
@@ -26,7 +25,6 @@ Module.register('MMM-ScreenControl', {
       this.setModuleVisibility(this.state);
 
       if (!this.started) {
-        //this.testCycle();
         this.started = true;
       }
       return;
@@ -40,8 +38,6 @@ Module.register('MMM-ScreenControl', {
   },
 
   notificationReceived: function(notification, payload, sender) {
-    this.sendSocketNotification('ACK-notificationReceived', 'got ' + notification + ': ' + payload);
-
     if (notification === 'SET_SCREEN_STATE') {
       this.sendSocketNotification('SET_SCREEN_STATE', payload);
       return;
@@ -54,26 +50,6 @@ Module.register('MMM-ScreenControl', {
     this.started = false;
 
     this.sendSocketNotification('CONFIG', this.config);
-  },
-
-  testCycle: function() {
-    const self = this;
-    var orig = this.state;
-
-    this.sendSocketNotification('TEST', 'ready to test from ' + orig);
-
-    setTimeout(function(state) {
-      Log.info('Turn screen ' + state);
-      self.sendSocketNotification('TEST', 'first one ' + state);
-      self.sendSocketNotification('SET_SCREEN_STATE', state);
-    }, 30000, !orig);
-
-    setTimeout(function(state) {
-      Log.info('Turn screen ' + state);
-      self.sendSocketNotification('TEST', 'second one ' + state);
-      self.sendSocketNotification('SET_SCREEN_STATE', state);
-    }, 90000, orig);
-
   },
 
   setModuleVisibility: function(visible) {
