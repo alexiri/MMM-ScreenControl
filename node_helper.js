@@ -23,7 +23,7 @@ module.exports = NodeHelper.create({
 
       //Setup pins
       this.sensor = new Gpio(this.config.sensorPIN, 'in', 'both');
-      this.powerButton = new Gpio(this.config.powerButtonPIN, 'out', 'high');
+      this.powerButton = new Gpio(this.config.powerButtonPIN, 'high');
       this.toggleButton = new Gpio(this.config.toggleButtonPIN, 'in', 'rising');
 
       // Watch screen state for changes
