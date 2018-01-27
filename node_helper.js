@@ -15,6 +15,13 @@ module.exports = NodeHelper.create({
     this.sleepJob = null;
   },
 
+  stop: function() {
+    console.info('Stopping module helper: ' + this.name);
+    this.sensor.unexport();
+    this.powerButton.unexport();
+    this.toggleButton.unexport();
+  },
+
   socketNotificationReceived: function(notification, payload) {
     if (notification === 'CONFIG' && this.started == false) {
       const self = this;
