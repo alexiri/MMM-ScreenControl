@@ -26,7 +26,7 @@ module.exports = NodeHelper.create({
       this.toggleButton = new Gpio(this.config.toggleButtonPIN, 'in', 'rising');
 
       // Watch screen state for changes
-      this.sensor.watch(function(value) {
+      this.sensor.watch(function(err, value) {
         if (self.screenState != value) { // don't notify old states, just changes
           self.notifyScreenState(value);
           self.screenState = value;
@@ -34,7 +34,7 @@ module.exports = NodeHelper.create({
       });
 
       // Watch toggle button for changes
-      this.toggleButton.watch(function(value) {
+      this.toggleButton.watch(function(err, value) {
         console.log(self.name + ' detected toggle button');
 
         if (self.config.buzz == true) {
