@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
 
         if (self.config.buzz == true) {
           // Make some noise!
-          exec('sudo ' + __dirname + '/pulse', function(error, stdout, stderr) {
+          exec('sudo ' + self.path + '/pulse', function(error, stdout, stderr) {
             if (error != null) {
               console.log(self.name + ' failed to make a sound');
               console.log(error);
