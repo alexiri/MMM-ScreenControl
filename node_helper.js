@@ -177,6 +177,13 @@ module.exports = NodeHelper.create({
             console.log(self.name + ' is turning the screen ' + (action == true ? 'on': 'off') + ' as scheduled');
             self.setScreenState(action);
             console.log(self.name + ' will execute again at ' + this.nextDate().toDate() + ' based on "' + cronTime + '"');
+
+            // Remove ad-hoc job, if it's there
+            if (self.sleepJob != null) {
+              console.log(self.name + ' canceling toggle button job');
+              self.sleepJob.stop();
+              self.sleepJob == null;
+            }
           },
           onComplete: function() {
             console.log(self.name + ' has finished turning the screen ' + (action == true ? 'on': 'off') + ' based on "' + cronTime + '"');
