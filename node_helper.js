@@ -56,11 +56,11 @@ module.exports = NodeHelper.create({
 
         // When the screen is on, emit button press events
         if (self.screenState == true) {
-            self.sendSocketNotification('BUTTON_PRESSED', true);
-          }
+          self.sendSocketNotification('BUTTON_PRESSED', true);
+        }
 
-          // Screen is already on and there's no sleep job, so we must be in a schedule
-          if (self.screenState == true && self.sleepJob == null) { return; }
+        // Screen is already on and there's no sleep job, so we must be in a schedule
+        if (self.screenState != self.config.defaultState && self.sleepJob == null) { return; }
 
           // Remove old job, if it's there
           if (self.sleepJob != null) {
@@ -92,25 +92,25 @@ module.exports = NodeHelper.create({
 
           console.log(self.name + ' will turn off the screen at ' + nextOff);
           self.setScreenState(true);
-          
-        });
+      }); // End this.toggleButton.watch
 
-        this.removeScheduledJobs();
-        var newState = this.createScheduledJobs(this.config.schedules);
 
-        var state = (this.sensor.readSync() == 0 ? false : true);
-        if (newState == undefined) {
-          console.log(this.name + ': no schedules are currently in effect, setting the default state');
-          newState = this.config.defaultState;
-        }
-        if (state != newState) {
-          // Set new state
-          this.setScreenState(newState);
-          // No need to notify, the watcher will do it
-        } else {
-          // Notify the current state
-          this.notifyScreenState(this.sensor.readSync());
-        }
+      this.removeScheduledJobs();
+      var newState = this.createScheduledJobs(this.config.schedules);
+
+      var state = (this.sensor.readSync() == 0 ? false : true);
+      if (newState == undefined) {
+        console.log(this.name + ': no schedules are currently in effect, setting the default state');
+        newState = this.config.defaultState;
+      }
+      if (state != newState) {
+        // Set new state
+        this.setScreenState(newState);
+        // No need to notify, the watcher will do it
+      } else {
+        // Notify the current state
+        this.notifyScreenState(this.sensor.readSync());
+      }
 
         this.started = true;
       } else if (notification === 'GET_SCREEN_STATE') {
