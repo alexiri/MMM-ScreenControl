@@ -119,7 +119,13 @@ module.exports = NodeHelper.create({
       } else if (notification === 'SET_SCREEN_STATE') {
         // Set a new state
         this.setScreenState(payload);
+      } else if (notification === 'CREATE_MODULE_SCHEDULE') {
+        this.createModuleSchedule(payload);
       }
+
+    },
+
+    createModuleSchedule: function(payload) {
 
     },
       

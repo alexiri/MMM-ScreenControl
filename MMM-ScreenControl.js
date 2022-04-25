@@ -13,6 +13,8 @@ Module.register('MMM-ScreenControl', {
     buzz: true, // Make some noise when the toggle button is pressed
 
     animationSpeed: 1000,
+
+    schedulerClass: 'scheduled',
   },
 
 
@@ -33,15 +35,33 @@ Module.register('MMM-ScreenControl', {
     if (notification === 'BUTTON_PRESSED') {
       Log.info('Button pressed'); 
       this.sendNotification(notification, payload);
+      MM.getModules().exceptModule(this).withClass(this.config.schedulerClass).enumerate(function(module) {
+        if (module.hidden) {
+          module.show();
+        } else {
+          module.hide();
+        }
+      });
       return;
     }
   },
 
   notificationReceived: function(notification, payload, sender) {
-    if (notification === 'SET_SCREEN_STATE') {
+    var self = this;
+    if (sender === undefined && notification === 'DOM_OBJECTS_CREATED') {
+      MM.getModules().exceptModule(this).withClass(this.config.schedulerClass).enumerate(function(module) {
+        Log.log(self.name + " wants to schedule the display of " + module.name );
+        if (typeof module.config.module_schedule === "object") {
+          self.sendSocketNotification("CREATE_MODULE_SCHEDULE", {name: module.name, id: module.identifier, schedule: module.config.module_schedule});
+        } else {
+          Log.error( module.name + " is configured to be scheduled, but the module_schedule option is undefined" );
+        }
+      });
+    } else if (notification === 'SET_SCREEN_STATE') {
       this.sendSocketNotification('SET_SCREEN_STATE', payload);
       return;
     }
+
   },
 
   start: function() {
