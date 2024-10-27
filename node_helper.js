@@ -128,7 +128,7 @@ module.exports = NodeHelper.create({
     createModuleSchedule: function(payload) {
 
     },
-      
+
     createScheduledJobs: function() {
       var newState;
 
@@ -161,7 +161,7 @@ module.exports = NodeHelper.create({
         if (now >= nextStartDate && now < nextEndDate) {
           console.log(this.name + ' job should have been triggered already, will do it now.');
           newState = schedule.state;
-        } 
+        }
 
         console.log(this.name + ' has created the schedule successfully');
         console.log(this.name + ' will next turn the screen ' + (schedule.state == true ? 'on': 'off') + ' at ' + nextStartDate);
@@ -173,7 +173,7 @@ module.exports = NodeHelper.create({
 
     createCronJob: function(cronTime, action) {
       const self = this;
-    
+
       if (typeof(action) != typeof(true)) { return false; }
 
       try {
@@ -202,7 +202,7 @@ module.exports = NodeHelper.create({
       } catch(ex) {
         console.log(this.name + ' could not create schedule - check action: ' + action + ', expression: "' + cronTime + '"');
       }
-      
+
     },
 
     isValidSchedule: function(schedule) {
@@ -215,7 +215,7 @@ module.exports = NodeHelper.create({
           return false;
         }
       }
-      
+
       if (typeof(schedule.state) != typeof(true)) {
         console.log(this.name + ' cannot create schedule. State must be true or false');
         return false;
@@ -232,7 +232,7 @@ module.exports = NodeHelper.create({
       }
       this.scheduledJobs.length = 0;
     },
-    
+
     stopCronJob: function(cronJob){
       try {
         cronJob.stop();
@@ -246,8 +246,8 @@ module.exports = NodeHelper.create({
 
     var state = (this.sensor.readSync() == 0 ? false : true);
     console.log(this.name + ': Screen is currently ' + (state == true ? 'on': 'off'));
-    
-    if (state != newState) { 
+
+    if (state != newState) {
       this.pushPowerButton();
     }
   },
@@ -255,19 +255,40 @@ module.exports = NodeHelper.create({
   pushPowerButton: function() {
     const self = this;
     if (this.cooldown) {
-      console.log(this.name + ': Power button cooling off, ignoring');
+      console.log(this.name + ': pushPowerButton: Power button cooling off, ignoring');
       return false;
     }
-    console.log(this.name + ': Pushing power button');
+    console.log(this.name + ': pushPowerButton: Pushing power button');
     this.cooldown = true;
 
-    this.powerButton.writeSync(0);
-    setTimeout(function() {
-      self.powerButton.writeSync(1);
-    }, 200);
+    var currentState = (this.sensor.readSync() == 0 ? false : true);
+    var desiredState = ! currentState;
+    console.log(this.name + ': pushPowerButton: Current screen state is ' + (currentState == true ? 'on': 'off'));
+
+    // Loop every 5 seconds up to 10 times until the screen state changes
+    var count = 0;
+    var max = 10;
+    var interval = setInterval(function() {
+      var currentState = (self.sensor.readSync() == 0 ? false : true);
+      if (currentState != desiredState) {
+        console.log(self.name + ': pushPowerButton: Pressing power button, attempt ' + count);
+        self.powerButton.writeSync(0);
+        setTimeout(function() {
+          self.powerButton.writeSync(1);
+        }, 200);
+        count++;
+      }
+
+      if (count >= max || currentState == desiredState) {
+        clearInterval(interval);
+        if (count >= max) {
+          console.log(self.name + ': pushPowerButton: Power button failed to change screen state');
+        }
+      }
+    }, 5000);
 
     setTimeout(function() {
-      console.log(self.name + ': Power button is enabled again');
+      console.log(self.name + ': pushPowerButton: Power button is enabled again');
       self.cooldown = false;
     }, this.config.buttonCooldownPeriod);
   },
