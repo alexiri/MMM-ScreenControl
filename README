@@ -1,3 +1,7 @@
+To compile pulse:
+ - sudo apt install pigpio
+ - gcc pulse.c  -o pulse -lpigpio
+
 If you get the error:
 
 Error: Module version mismatch. Expected 50, got 48.
