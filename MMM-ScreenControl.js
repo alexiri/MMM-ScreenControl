@@ -1,11 +1,11 @@
 Module.register('MMM-ScreenControl', {
   // Default module config.
   defaults: {
-    sensorPIN: 27, // GPIO 13
-    powerButtonPIN: 17, // GPIO 11
-    toggleButtonPIN: 22, // GPIO 15
+    sensorPIN: 539, // Pin 13, GPIO 27
+    powerButtonPIN: 529, // Pin 11, GPIO 17
+    toggleButtonPIN: 534, // Pin 15, GPIO 22
     buttonCooldownPeriod: 10 * 1000, // 10 seconds
-    buzzerPIN: 12, // GPIO 32
+    buzzerPIN: 524, // Pin 32, GPIO 12
 
     defaultState: true,
     schedules: [],
