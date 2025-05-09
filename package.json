@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "cron": "^1.8.2",
+    "cron": "^4.0.0",
     "onoff": "^6.0.3"
   },
   "devDependencies": {
